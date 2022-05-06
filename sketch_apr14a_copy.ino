@@ -1,12 +1,9 @@
 // GROUP 5
 // CPE 301.1001
 // Semester Project
+/* NOTES: 
+DHT Library is: DHTlib by Rob Tillaart */
 
-//Analog Stuff
-volatile unsigned char* my_ADMUX = (unsigned char *)0x7C;
-volatile unsigned char* my_ADCSRB = (unsigned char *)0x7B;
-volatile unsigned char* my_ADCSRA = (unsigned char *)0x7A;
-volatile unsigned int* my_ADC_DATA = (unsigned int *)0x78;
 
 #include <dht.h>
 #include <LiquidCrystal.h>
@@ -33,6 +30,12 @@ volatile unsigned int* my_ADC_DATA = (unsigned int *)0x78;
 #define DS1307RTC_PWR 19
 
 /*---- Declarations ----*/
+//Analog Stuff
+volatile unsigned char* my_ADMUX = (unsigned char *)0x7C;
+volatile unsigned char* my_ADCSRB = (unsigned char *)0x7B;
+volatile unsigned char* my_ADCSRA = (unsigned char *)0x7A;
+volatile unsigned int* my_ADC_DATA = (unsigned int *)0x78;
+
 //STEPPER
 Stepper stepper(STEPS, 54,55,56,57);
 int previous = 5;
@@ -88,25 +91,14 @@ void setup(){
 
 void loop(){
   // MOTOR
-  digitalWrite(DIRA,HIGH); //one way
-  digitalWrite(DIRB,LOW);
-  analogWrite(ENABLE,100); //enable on
-  //delay(200);
+//  digitalWrite(DIRA,HIGH); //one way
+//  digitalWrite(DIRB,LOW);
+//  analogWrite(ENABLE,100); //enable on
+//  //delay(200);
+  motor();
   
   // LCD / TEMP / HUMIDITY Output
-  int chk = DHT.read11(DHT11_PIN);
-  lcd.setCursor(0,0); 
-  lcd.print("Temp: ");
-  lcd.print(DHT.temperature);
-  lcd.print((char)223);
-  lcd.print("C");
-  lcd.setCursor(0,1);
-  lcd.print("Humidity: ");
-  lcd.print(DHT.humidity);
-  lcd.print("%");
-
-  Serial.print("Temp: ");
-  Serial.print(DHT.temperature);
+  temp();
 
   // WATER LEVEL SENSOR
   /* The resistance value is inversely proportional to the water level.
@@ -180,8 +172,33 @@ void print2digits(int number) {
   Serial.print(number);
 }
 
+// Device Functions
+void motor(){
+  digitalWrite(DIRA,HIGH); //one way
+  digitalWrite(DIRB,LOW);
+  analogWrite(ENABLE,100); //enable on 
+}
 
-// Analog FUnctions
+void temp(){
+  // LCD / TEMP / HUMIDITY Output
+  int chk = DHT.read11(DHT11_PIN);
+  lcd.setCursor(0,0); 
+  lcd.print("Temp: ");
+  lcd.print(DHT.temperature);
+  lcd.print((char)223);
+  lcd.print("C");
+  lcd.setCursor(0,1);
+  lcd.print("Humidity: ");
+  lcd.print(DHT.humidity);
+  lcd.print("%");
+
+//  Serial.print("Temp: ");
+//  Serial.print(DHT.temperature);
+}
+
+
+
+// Analog Functions
 void adc_init()
 {
   // set up the A register
